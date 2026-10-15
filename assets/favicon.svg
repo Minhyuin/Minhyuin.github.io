@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Myuin">
+  <rect width="64" height="64" rx="14" fill="#141413"/>
+  <circle cx="32" cy="16" r="5.4" fill="none" stroke="#FAF9F5" stroke-width="3.2"/>
+  <path d="M32 21.4v13" fill="none" stroke="#FAF9F5" stroke-width="3.2" stroke-linecap="round"/>
+  <circle cx="32" cy="46" r="11.4" fill="none" stroke="#D97757" stroke-width="3.6"/>
+  <path d="M32 34.6v1.4M32 56v1.4M20.6 46h1.4M42 46h1.4" fill="none" stroke="#D97757" stroke-width="3"/>
+</svg>

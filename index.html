@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Myuin · 轮腿机器人、电控与具身智能</title>
+<meta name="description" content="Myuin（华南师范大学 · 广州）的个人主页：轮腿机器人的运动控制与仿真、强化学习 sim2sim / sim2real 部署，以及面向编码 agent 的嵌入式实板调试工具链。">
+<meta name="author" content="Myuin">
+<meta name="theme-color" content="#ECE9E0" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1A1916" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Myuin · 轮腿机器人、电控与具身智能">
+<meta property="og:description" content="轮腿机器人的运动控制与仿真、强化学习 sim2sim / sim2real 部署，以及面向编码 agent 的嵌入式实板调试工具链。">
+<meta property="og:url" content="https://minhyuin.github.io/">
+<meta property="og:locale" content="zh_CN">
+<link rel="canonical" href="https://minhyuin.github.io/">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+
+<script>
+  /* 防 FOUC：在首屏绘制前应用已保存的主题 */
+  (function () {
+    try {
+      var t = localStorage.getItem('myuin-theme');
+      if (t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t);
+    } catch (e) { /* 隐私模式下忽略 */ }
+  })();
+</script>
+
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="assets/fonts/fonts.css">
+<link rel="stylesheet" href="assets/site.css">
+<!-- 中文书法字体：异步加载，失败即静默降级到系统字体，不阻塞渲染 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css"
+      media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css"></noscript>
+</head>
+<body>
+<a class="skip-link" href="#main">跳到主内容</a>
+
+<header class="site-header">
+  <nav class="nav page-container" aria-label="主导航">
+    <a class="brand" href="#top">
+      <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <circle cx="12" cy="4.6" r="2.3" fill="none" stroke="currentColor" stroke-width="1.6"/>
+        <path d="M12 6.9v6.4" fill="none" stroke="currentColor" stroke-width="1.6"/>
+        <circle cx="12" cy="17.6" r="4.2" fill="none" stroke="#D97757" stroke-width="1.8"/>
+        <path d="M12 13.4v-1" fill="none" stroke="currentColor" stroke-width="1.6"/>
+      </svg>
+      <span class="brand-name">Myuin</span>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="#about">关于</a></li>
+      <li><a href="#projects">项目</a></li>
+      <li><a href="#skills">技术栈</a></li>
+      <li><a href="#contact">联系</a></li>
+    </ul>
+
+    <button class="theme-toggle" type="button" aria-pressed="false" aria-label="切换深色 / 浅色主题">
+      <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.7"/>
+        <path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6"
+              fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+      </svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M20 14.4A8.6 8.6 0 0 1 9.6 4a8.6 8.6 0 1 0 10.4 10.4Z"
+              fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </nav>
+</header>
+
+<main id="main">
+
+  <!-- ═══════════ Hero ═══════════ -->
+  <section class="hero" id="top">
+    <div class="hero-inner page-container">
+      <div class="hero-copy">
+        <p class="eyebrow scroll-reveal">华南师范大学 · 广州</p>
+        <h1 class="hero-title scroll-reveal">轮腿、电控<br>与具身智能</h1>
+        <p class="hero-lede scroll-reveal">
+          我是 Myuin。做轮腿机器人的运动控制与仿真，把强化学习策略从仿真搬到实机，
+          也写一些让编码 agent 能真正碰到硬件的调试工具。
+        </p>
+        <p class="hero-quote scroll-reveal">
+          <span lang="en">Per aspera, ad astra.</span>
+          <span class="hero-quote-cn">循此苦旅，以达星辰。</span>
+        </p>
+        <div class="hero-actions scroll-reveal">
+          <a class="btn btn-primary" href="#projects">查看项目</a>
+          <a class="btn btn-ghost" href="https://github.com/Minhyuin" target="_blank" rel="noopener">
+            GitHub<span class="arrow" aria-hidden="true">↗</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- 非标准元素：突破容器的工程制图式装饰 -->
+      <figure class="hero-figure scroll-reveal" aria-hidden="true">
+        <svg viewBox="0 0 340 400" class="leg-figure" focusable="false">
+          <!-- 尺寸标注 -->
+          <g class="fig-dim">
+            <path d="M28 40h18M28 340h18" fill="none"/>
+            <path d="M36 40v300" fill="none" stroke-dasharray="5 6"/>
+            <path d="M28 40l6-5v10zM28 340l6-5v10z" fill="currentColor" stroke="none"/>
+          </g>
+
+          <!-- 髋 / 大腿 / 小腿 -->
+          <g class="fig-link">
+            <path d="M168 74L236 196" fill="none"/>
+            <path d="M236 196L186 300" fill="none"/>
+            <circle cx="168" cy="74" r="9" fill="none" class="fig-joint-hip"/>
+            <circle cx="236" cy="196" r="7.5" fill="none" class="fig-joint"/>
+          </g>
+
+          <!-- 轮子（缓慢自转） -->
+          <g class="wheel">
+            <circle cx="186" cy="340" r="40" fill="none" class="fig-wheel-rim"/>
+            <circle cx="186" cy="340" r="5" fill="none" class="fig-joint"/>
+            <path d="M186 302v76M148 340h76M159 313l54 54M213 313l-54 54" fill="none" class="fig-spokes"/>
+          </g>
+
+          <!-- 地面 -->
+          <path d="M0 381h340" fill="none" class="fig-ground"/>
+          <path d="M40 392h60M120 392h44M184 392h72" fill="none" class="fig-hatch"/>
+        </svg>
+        <figcaption class="fig-caption">
+          <span lang="en">wheel-legged · 2-link leg + wheel</span>
+        </figcaption>
+      </figure>
+    </div>
+
+    <dl class="hero-stats page-container">
+      <div class="stat scroll-reveal">
+        <dt>公开仓库</dt>
+        <dd><span class="stat-num">15</span></dd>
+      </div>
+      <div class="stat scroll-reveal">
+        <dt>主攻方向</dt>
+        <dd><span class="stat-num">3</span><span class="stat-unit">个</span></dd>
+      </div>
+      <div class="stat scroll-reveal">
+        <dt>在 GitHub 上</dt>
+        <dd><span class="stat-num">2021</span><span class="stat-unit">年起</span></dd>
+      </div>
+      <div class="stat scroll-reveal">
+        <dt>坐标</dt>
+        <dd><span class="stat-text">广州</span></dd>
+      </div>
+    </dl>
+
+    <span class="hero-watermark" aria-hidden="true">AD ASTRA</span>
+  </section>
+
+  <!-- ═══════════ 关于 ═══════════ -->
+  <section class="section section-raised" id="about">
+    <div class="page-container about-grid">
+      <div class="about-copy">
+        <p class="eyebrow scroll-reveal">关于</p>
+        <h2 class="scroll-reveal">把图纸变成<br>会跑的东西</h2>
+        <p class="scroll-reveal">
+          我的仓库集中在三件事上：轮腿机器人的运动控制与仿真、把强化学习策略从仿真搬到实机、
+          以及嵌入式系统的实板调试工具链。比起停留在仿真曲线里，我更关心代码在实机上跑起来的那一刻。
+        </p>
+        <p class="scroll-reveal">
+          <a href="https://github.com/Minhyuin/wheelbipe_ros2_sim2sim" target="_blank" rel="noopener">wheelbipe_ros2_sim2sim</a>
+          是 26 赛季轮腿步兵的强化学习 sim2sim / sim2real 部署仓库；
+          <a href="https://github.com/Minhyuin/WheelLegged_Matlab" target="_blank" rel="noopener">WheelLegged_Matlab</a>
+          放轮腿机器人的 MATLAB 仿真与各种计算脚本；
+          <a href="https://github.com/Minhyuin/pig0_ec" target="_blank" rel="noopener">pig0_ec</a>
+          则是零号猪仔的电控端代码，基于 Keil 编译与烧录调试。
+        </p>
+        <p class="scroll-reveal">
+          <a href="https://github.com/Minhyuin/PinyCore-debug-skill" target="_blank" rel="noopener">PinyCore-debug-skill</a>
+          解决的是另一个方向的痛点：让编码 agent 真的能碰到硬件——经 J-Link 用 GDB 读寄存器与符号变量，
+          用 SEGGER SystemView 采集 CPU 负载并做前后对比，把「改了代码之后到底变快了没有」变成可测量的结论。
+        </p>
+      </div>
+
+      <aside class="about-card scroll-reveal">
+        <h3 class="card-title">名片</h3>
+        <dl class="card-list">
+          <div>
+            <dt>ID</dt>
+            <dd>Minhyuin / Myuin</dd>
+          </div>
+          <div>
+            <dt>方向</dt>
+            <dd>轮腿机器人 · 嵌入式电控 · 强化学习部署</dd>
+          </div>
+          <div>
+            <dt>平台</dt>
+            <dd>STM32H723 · FreeRTOS · ROS 2 · MATLAB</dd>
+          </div>
+          <div>
+            <dt>所在地</dt>
+            <dd>广东 · 广州</dd>
+          </div>
+          <div>
+            <dt>座右铭</dt>
+            <dd lang="en" class="serif">Per aspera, ad astra.</dd>
+          </div>
+        </dl>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ═══════════ 项目 ═══════════ -->
+  <section class="section section-dark" id="projects">
+    <div class="page-container">
+      <header class="section-head">
+        <p class="eyebrow scroll-reveal">项目</p>
+        <h2 class="scroll-reveal">在做的东西</h2>
+        <p class="section-sub scroll-reveal">从电控固件到强化学习策略部署，都是为了让机器真的动起来。</p>
+      </header>
+
+      <ul class="project-grid">
+        <li class="project-card scroll-reveal">
+          <a href="https://github.com/Minhyuin/PinyCore-debug-skill" target="_blank" rel="noopener">
+            <div class="project-top">
+              <h3>PinyCore-debug-skill</h3>
+              <span class="arrow" aria-hidden="true">↗</span>
+            </div>
+            <p>给编码 agent 用的 STM32H723 / FreeRTOS 实板调试技能：经 J-Link 用 GDB 读寄存器与符号变量，用 SEGGER SystemView 采集 CPU 负载并做前后对比。Windows / Linux，仅标准库。</p>
+            <div class="project-meta">
+              <span class="lang"><i class="dot dot-python" aria-hidden="true"></i>Python</span>
+              <span class="tag">MIT</span>
+              <span class="tag">Agent Skill</span>
+            </div>
+          </a>
+        </li>
+
+        <li class="project-card scroll-reveal">
+          <a href="https://github.com/Minhyuin/WheelLegged_Matlab" target="_blank" rel="noopener">
+            <div class="project-top">
+              <h3>WheelLegged_Matlab</h3>
+              <span class="arrow" aria-hidden="true">↗</span>
+            </div>
+            <p>轮腿机器人的 MATLAB 仿真及各种计算脚本——建模、轨迹与控制器验证的第一站。</p>
+            <div class="project-meta">
+              <span class="lang"><i class="dot dot-matlab" aria-hidden="true"></i>MATLAB</span>
+              <span class="tag">仿真</span>
+            </div>
+          </a>
+        </li>
+
+        <li class="project-card scroll-reveal">
+          <a href="https://github.com/Minhyuin/pig0_ec" target="_blank" rel="noopener">
+            <div class="project-top">
+              <h3>pig0_ec</h3>
+              <span class="arrow" aria-hidden="true">↗</span>
+            </div>
+            <p>零号猪仔电控端代码，基于 Keil 编译、烧录调试——从电路板到能跑的控制循环。</p>
+            <div class="project-meta">
+              <span class="lang"><i class="dot dot-c" aria-hidden="true"></i>C / C++</span>
+              <span class="tag">嵌入式</span>
+            </div>
+          </a>
+        </li>
+
+        <li class="project-card scroll-reveal">
+          <a href="https://github.com/Minhyuin/wheelbipe_ros2_sim2sim" target="_blank" rel="noopener">
+            <div class="project-top">
+              <h3>wheelbipe_ros2_sim2sim</h3>
+              <span class="arrow" aria-hidden="true">↗</span>
+            </div>
+            <p>26 赛季轮腿步兵强化学习 sim2sim &amp; sim2real 部署仓库——策略先在同构仿真里对齐，再落到实机。</p>
+            <div class="project-meta">
+              <span class="lang"><i class="dot dot-cpp" aria-hidden="true"></i>C++</span>
+              <span class="tag">ROS 2</span>
+              <span class="tag tag-fork">fork</span>
+            </div>
+          </a>
+        </li>
+
+        <li class="project-card scroll-reveal">
+          <a href="https://github.com/Minhyuin/LLM-Multiplexer" target="_blank" rel="noopener">
+            <div class="project-top">
+              <h3>LLM-Multiplexer</h3>
+              <span class="arrow" aria-hidden="true">↗</span>
+            </div>
+            <p>多模型请求复用与调度方向的折腾记录，给自己的 agent 工具链做底座。</p>
+            <div class="project-meta">
+              <span class="lang"><i class="dot dot-html" aria-hidden="true"></i>HTML</span>
+              <span class="tag tag-fork">fork</span>
+            </div>
+          </a>
+        </li>
+
+        <li class="project-card project-card-more scroll-reveal">
+          <a href="https://github.com/Minhyuin?tab=repositories" target="_blank" rel="noopener">
+            <div class="project-top">
+              <h3>全部 15 个仓库</h3>
+              <span class="arrow" aria-hidden="true">↗</span>
+            </div>
+            <p>还有 smc_controller、iDeer、CLIProxyAPIPlus 等仓库与 fork，都在 GitHub 上。</p>
+            <div class="project-meta">
+              <span class="tag tag-accent">github.com/Minhyuin</span>
+            </div>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ═══════════ 技术栈 ═══════════ -->
+  <section class="section" id="skills">
+    <div class="page-container">
+      <header class="section-head">
+        <p class="eyebrow scroll-reveal">技术栈</p>
+        <h2 class="scroll-reveal">用过的工具</h2>
+        <p class="section-sub scroll-reveal">按「从板子到策略」的顺序排列。</p>
+      </header>
+
+      <div class="skill-grid">
+        <article class="skill-group scroll-reveal">
+          <h3><span class="skill-index">01</span>嵌入式与实时系统</h3>
+          <ul class="chips">
+            <li>STM32H723</li>
+            <li>FreeRTOS</li>
+            <li>Keil MDK</li>
+            <li>J-Link</li>
+            <li>GDB</li>
+            <li>SEGGER SystemView</li>
+            <li>CAN / 串口通信</li>
+          </ul>
+        </article>
+
+        <article class="skill-group scroll-reveal">
+          <h3><span class="skill-index">02</span>机器人控制与学习</h3>
+          <ul class="chips">
+            <li>ROS 2</li>
+            <li>强化学习</li>
+            <li>Sim2Sim</li>
+            <li>Sim2Real</li>
+            <li>轮腿 / 足式运动控制</li>
+            <li>动力学建模</li>
+          </ul>
+        </article>
+
+        <article class="skill-group scroll-reveal">
+          <h3><span class="skill-index">03</span>仿真与工具链</h3>
+          <ul class="chips">
+            <li>MATLAB / Simulink</li>
+            <li>Python</li>
+            <li>C / C++</li>
+            <li>Git</li>
+            <li>Agent Skill 开发</li>
+            <li>Linux / Windows</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ═══════════ 联系 / 页脚 ═══════════ -->
+<footer class="site-footer" id="contact">
+  <div class="page-container footer-grid">
+    <div class="footer-cta">
+      <p class="eyebrow scroll-reveal">联系</p>
+      <h2 class="scroll-reveal">一起把东西<br>做出来</h2>
+      <p class="scroll-reveal">对轮腿机器人、嵌入式调试或者 sim2real 有想法，欢迎来 GitHub 上聊。</p>
+      <a class="btn btn-primary scroll-reveal" href="https://github.com/Minhyuin" target="_blank" rel="noopener">
+        在 GitHub 上找我<span class="arrow" aria-hidden="true">↗</span>
+      </a>
+    </div>
+
+    <div class="footer-meta">
+      <ul class="footer-links">
+        <li><a href="https://github.com/Minhyuin" target="_blank" rel="noopener">GitHub</a></li>
+        <li><a href="https://github.com/Minhyuin?tab=repositories" target="_blank" rel="noopener">全部仓库</a></li>
+        <li><a href="#top">回到顶部</a></li>
+      </ul>
+      <p class="fineprint">
+        © <span id="year">2026</span> Myuin · 由 GitHub Pages 托管<br>
+        设计规范参考 <a href="https://github.com/TartSlayer/anthropic-style-cn" target="_blank" rel="noopener">anthropic-style-cn</a>；
+        字体 Lora / Poppins / JetBrains Mono 依 SIL OFL 1.1 授权
+      </p>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/site.js" defer></script>
+</body>
+</html>
