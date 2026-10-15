@@ -13,23 +13,32 @@
   /* ── 1. 滚动入场 ────────────────────────────────────────── */
   var targets = document.querySelectorAll('.scroll-reveal');
 
-  if (prefersReduced || !('IntersectionObserver' in window)) {
+  function revealAll() {
     targets.forEach(function (el) { el.classList.add('is-visible'); });
-  } else {
-    var observer = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (!entry.isIntersecting) return;
-        var el = entry.target;
-        // 同一屏内的元素错落 80ms 出现
-        var siblings = Array.prototype.slice.call(el.parentNode.children);
-        var index = Math.min(siblings.indexOf(el), 6);
-        el.style.transitionDelay = (index * 80) + 'ms';
-        el.classList.add('is-visible');
-        observer.unobserve(el);
-      });
-    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
+  }
 
-    targets.forEach(function (el) { observer.observe(el); });
+  if (prefersReduced || !('IntersectionObserver' in window)) {
+    revealAll();
+  } else {
+    try {
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          var el = entry.target;
+          // 同一屏内的元素错落 80ms 出现
+          var siblings = Array.prototype.slice.call(el.parentNode.children);
+          var index = Math.min(siblings.indexOf(el), 6);
+          el.style.transitionDelay = (index * 80) + 'ms';
+          el.classList.add('is-visible');
+          observer.unobserve(el);
+        });
+      }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
+
+      targets.forEach(function (el) { observer.observe(el); });
+    } catch (e) {
+      // 任何异常都退回到「全部可见」，宁可不动画也不要空白页
+      revealAll();
+    }
   }
 
   /* ── 2. 主题切换 ────────────────────────────────────────── */

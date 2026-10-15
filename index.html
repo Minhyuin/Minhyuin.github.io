@@ -17,8 +17,11 @@
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 
 <script>
-  /* 防 FOUC：在首屏绘制前应用已保存的主题 */
+  /* 1) 标记 JS 可用：滚动入场动画只在有 JS 时启用，
+        否则脚本被禁用/加载失败时页面会整片透明。
+     2) 防 FOUC：在首屏绘制前应用已保存的主题 */
   (function () {
+    document.documentElement.classList.add('js');
     try {
       var t = localStorage.getItem('myuin-theme');
       if (t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t);

@@ -17,14 +17,17 @@
   --color-text-muted:     #9B9890;
   --color-text-inverted:  #FAF9F5;
   --color-text-inv-dim:   #A8A59C;
-  --color-text-link:      #C96442;
+  --color-text-link:      #A34D2E;
   --color-border-default: #D8D5CC;
   --color-border-subtle:  #E8E6DC;
   --color-border-strong:  #9B9890;
   --color-border-inv:     rgba(250, 249, 245, 0.14);
   --color-border-inv-2:   rgba(250, 249, 245, 0.07);
-  --color-accent-orange:  #D97757;
+  --color-accent-orange:  #D97757;   /* 强调色本体：描边、圆点、焦点环、深色底上的文字 */
   --color-accent-warm:    #C96442;
+  --color-accent-strong:  #B4573A;   /* 作为填充时用：白字压在上面 4.8:1，满足 AA */
+  --color-accent-strong-2:#9E4A30;   /* 同上，hover / active 用 */
+  --color-accent-ink:     #A34D2E;   /* 作为浅色底上的文字时用：4.7–5.2:1 */
   --color-accent-blue:    #6A9BCC;
   --color-accent-green:   #788C5D;
   --color-nav-bg:         rgba(236, 233, 224, 0.86);
@@ -95,6 +98,8 @@
     --color-text-primary:   #EAE7DC;
     --color-text-secondary: #9D9A91;
     --color-text-muted:     #6E6B63;
+    --color-text-link:      #D97757;   /* 深色底上直接用强调色本体，对比度 5.2:1 */
+    --color-accent-ink:     #D97757;
     --color-border-default: #3A3830;
     --color-border-subtle:  #2E2D27;
     --color-border-strong:  #57544B;
@@ -113,6 +118,8 @@
   --color-text-primary:   #EAE7DC;
   --color-text-secondary: #9D9A91;
   --color-text-muted:     #6E6B63;
+  --color-text-link:      #D97757;
+  --color-accent-ink:     #D97757;
   --color-border-default: #3A3830;
   --color-border-subtle:  #2E2D27;
   --color-border-strong:  #57544B;
@@ -204,7 +211,7 @@ h3 { font-size: var(--text-lg); line-height: var(--leading-cn-snug); }
   top: -100px; left: var(--space-4);
   z-index: 200;
   padding: var(--space-3) var(--space-5);
-  background: var(--color-accent-orange);
+  background: var(--color-accent-strong);
   color: #FFF;
   border-radius: var(--radius-md);
   font-family: var(--font-heading);
@@ -231,11 +238,13 @@ h3 { font-size: var(--text-lg); line-height: var(--leading-cn-snug); }
 }
 .btn:active { transform: scale(0.97); }
 .btn-primary {
-  background-color: var(--color-accent-orange);
+  /* 用 accent-strong 而不是 accent-orange 作填充：橙底白字只有 3.1:1，
+     strong 是同一色相压深一档，白字达到 4.8:1 */
+  background-color: var(--color-accent-strong);
   color: #FFF;
   box-shadow: 0 4px 12px rgba(217, 119, 87, 0.28);
 }
-.btn-primary:hover { background-color: var(--color-accent-warm); box-shadow: 0 6px 20px rgba(217, 119, 87, 0.34); }
+.btn-primary:hover { background-color: var(--color-accent-strong-2); box-shadow: 0 6px 20px rgba(217, 119, 87, 0.34); }
 .btn-ghost {
   border: 1px solid var(--color-border-strong);
   color: var(--color-text-primary);
@@ -380,7 +389,8 @@ a:hover > .arrow, .btn:hover .arrow { transform: translate(2px, -2px); }
   margin-top: var(--space-2);
   font-family: var(--font-mono);
   font-size: var(--text-xs);
-  color: var(--color-text-muted);
+  /* 12px 小字，用 secondary 而不是 muted：浅色底上 muted(#9B9890) 只有 2.4:1，读不清 */
+  color: var(--color-text-secondary);
   text-align: right;
 }
 
@@ -479,7 +489,8 @@ a:hover > .arrow, .btn:hover .arrow { transform: translate(2px, -2px); }
   font-size: var(--text-xs);
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--color-text-muted);
+  /* 名片标签是 12px 正文级文字，需满足 AA：浅色底 4.6:1 / 深色底 5.0:1 */
+  color: var(--color-text-secondary);
   margin-bottom: var(--space-1);
 }
 .card-list dd { font-size: var(--text-md); line-height: var(--leading-cn-snug); }
@@ -556,7 +567,9 @@ a:hover > .arrow, .btn:hover .arrow { transform: translate(2px, -2px); }
   border-radius: var(--radius-full);
   letter-spacing: 0.04em;
 }
-.tag-fork { color: var(--color-text-muted); border-color: var(--color-border-inv-2); }
+/* fork 标签始终位于 .section-dark 上，用 inv-dim 而非 muted：
+   muted 在深色底上只有 3.6:1，inv-dim 是 7.8:1 */
+.tag-fork { color: var(--color-text-inv-dim); border-color: var(--color-border-inv-2); }
 .tag-accent { color: var(--color-accent-orange); border-color: rgba(217, 119, 87, 0.4); }
 .project-card-more a {
   background-color: transparent;
@@ -582,7 +595,8 @@ a:hover > .arrow, .btn:hover .arrow { transform: translate(2px, -2px); }
 .skill-index {
   font-family: var(--font-mono);
   font-size: var(--text-xs);
-  color: var(--color-accent-orange);
+  /* 12px 小字，浅色底上用 accent-ink（4.7:1），深色底上 accent-ink 会切成 #D97757 */
+  color: var(--color-accent-ink);
 }
 .chips { display: flex; flex-wrap: wrap; gap: var(--space-2); }
 .chips li {
@@ -630,18 +644,21 @@ a:hover > .arrow, .btn:hover .arrow { transform: translate(2px, -2px); }
 .fineprint {
   font-size: var(--text-xs);
   line-height: var(--leading-normal);
-  color: var(--color-text-muted);
+  /* 页脚始终是深色底：muted(#6E6B63) 在这里只有 3.6:1，换成 inv-dim 得 7.8:1 */
+  color: var(--color-text-inv-dim);
 }
 .fineprint a { color: var(--color-text-inv-dim); border-bottom: 1px solid var(--color-border-inv); }
 .fineprint a:hover { color: var(--color-accent-orange); }
 
 /* ── 13. 滚动入场 ───────────────────────────────────────────── */
-.scroll-reveal {
+/* 只在 JS 可用时（html.js，由 <head> 内联脚本添加）隐藏元素：
+   脚本被禁用或加载失败时，内容保持默认可见，不会整片透明。 */
+.js .scroll-reveal {
   opacity: 0;
   transform: translateY(24px);
   transition: opacity 0.5s var(--ease-default), transform 0.5s var(--ease-default);
 }
-.scroll-reveal.is-visible { opacity: 1; transform: none; }
+.js .scroll-reveal.is-visible { opacity: 1; transform: none; }
 
 /* ── 14. 响应式 ─────────────────────────────────────────────── */
 @media (max-width: 980px) {
