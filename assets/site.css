@@ -329,10 +329,7 @@ a:hover > .arrow, .btn:hover .arrow { transform: translate(2px, -2px); }
   background-color: var(--color-bg-base);
 }
 .hero-inner {
-  display: grid;
-  grid-template-columns: 1.28fr 0.72fr;   /* 黄金比例，拒绝 50/50 */
-  align-items: center;
-  gap: clamp(32px, 5vw, 72px);
+  max-width: 44rem;   /* 去掉装饰图后收窄，右侧留给水印 */
 }
 .hero-title { margin-bottom: var(--space-6); }
 .hero-lede {
@@ -360,39 +357,6 @@ a:hover > .arrow, .btn:hover .arrow { transform: translate(2px, -2px); }
   color: var(--color-text-secondary);
 }
 .hero-actions { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-8); }
-
-/* Hero 装饰图：工程制图式的轮腿机构 */
-.hero-figure {
-  position: relative;
-  justify-self: end;
-  width: min(100%, 340px);
-  margin-right: clamp(-40px, -3vw, 0px);   /* 轻微突破容器边界 */
-}
-.leg-figure { width: 100%; height: auto; color: var(--color-border-strong); }
-.leg-figure .fig-link path { stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; }
-.leg-figure .fig-link circle,
-.leg-figure .fig-dim path { stroke: currentColor; stroke-width: 1.6; }
-.leg-figure .fig-dim path { color: var(--color-text-muted); stroke: var(--color-text-muted); }
-.leg-figure .fig-joint-hip { stroke: var(--color-accent-orange) !important; stroke-width: 2.6 !important; }
-.leg-figure .fig-wheel-rim { stroke: var(--color-accent-orange); stroke-width: 3; }
-.leg-figure .fig-spokes { stroke: var(--color-border-strong); stroke-width: 1.2; opacity: 0.55; }
-.leg-figure .fig-ground { stroke: var(--color-border-default); stroke-width: 1.6; }
-.leg-figure .fig-hatch { stroke: var(--color-text-muted); stroke-width: 1.2; opacity: 0.7; }
-.leg-figure .wheel {
-  transform-box: view-box;
-  transform-origin: 186px 340px;
-  animation: wheelSpin 22s linear infinite;
-}
-@keyframes wheelSpin { to { transform: rotate(360deg); } }
-
-.fig-caption {
-  margin-top: var(--space-2);
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  /* 12px 小字，用 secondary 而不是 muted：浅色底上 muted(#9B9890) 只有 2.4:1，读不清 */
-  color: var(--color-text-secondary);
-  text-align: right;
-}
 
 /* 描边水印（突破网格的装饰） */
 .hero-watermark {
@@ -632,8 +596,6 @@ a:hover > .arrow, .btn:hover .arrow { transform: translate(2px, -2px); }
 
 /* ── 14. 响应式 ─────────────────────────────────────────────── */
 @media (max-width: 980px) {
-  .hero-inner { grid-template-columns: 1fr; }
-  .hero-figure { justify-self: start; width: min(100%, 280px); margin-right: 0; }
   .about-grid, .footer-grid { grid-template-columns: 1fr; }
 }
 
@@ -663,7 +625,7 @@ a:hover > .arrow, .btn:hover .arrow { transform: translate(2px, -2px); }
 
 /* ── 16. 打印 ───────────────────────────────────────────────── */
 @media print {
-  .site-header, .theme-toggle, .hero-figure, .hero-watermark { display: none; }
+  .site-header, .theme-toggle, .hero-watermark { display: none; }
   .scroll-reveal { opacity: 1; transform: none; }
   .section-dark, .site-footer { background: none; color: #000; }
 }
