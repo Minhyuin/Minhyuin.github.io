@@ -394,36 +394,6 @@ a:hover > .arrow, .btn:hover .arrow { transform: translate(2px, -2px); }
   text-align: right;
 }
 
-/* Hero 数据行 */
-.hero-stats {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--space-6);
-  margin-top: clamp(56px, 7vw, 96px);
-  padding-top: var(--space-8);
-  border-top: 1px solid var(--color-border-subtle);
-}
-.stat dt {
-  font-family: var(--font-heading);
-  font-size: var(--text-xs);
-  letter-spacing: 0.08em;
-  color: var(--color-text-secondary);
-  margin-bottom: var(--space-2);
-}
-.stat dd { display: flex; align-items: baseline; gap: var(--space-2); }
-.stat-num {
-  font-family: var(--font-display);
-  font-size: var(--text-2xl);
-  line-height: 1;
-  color: var(--color-text-primary);
-  font-variant-numeric: tabular-nums;
-}
-.stat-unit, .stat-text {
-  font-size: var(--text-sm);
-  color: var(--color-text-secondary);
-}
-.stat-text { font-size: var(--text-lg); color: var(--color-text-primary); }
-
 /* 描边水印（突破网格的装饰） */
 .hero-watermark {
   position: absolute;
@@ -665,7 +635,6 @@ a:hover > .arrow, .btn:hover .arrow { transform: translate(2px, -2px); }
   .hero-inner { grid-template-columns: 1fr; }
   .hero-figure { justify-self: start; width: min(100%, 280px); margin-right: 0; }
   .about-grid, .footer-grid { grid-template-columns: 1fr; }
-  .hero-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 640px) {

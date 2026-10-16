@@ -45,6 +45,8 @@ npx serve .
 
 ## 内容维护
 
+- 首页标题与一句话简介：编辑 `index.html` 中 `#top` 下的 `.hero-copy`（`h1.hero-title` 与 `p.hero-lede`）
+- 关于：编辑 `#about` 下的 `.about-copy`；右侧名片编辑 `.about-card` 里的 `<dl class="card-list">`
 - 项目卡片：编辑 `index.html` 中 `#projects` 下的 `<li class="project-card">`
 - 技术栈标签：编辑 `#skills` 下的 `<ul class="chips">`
 - 联系方式：编辑 `#contact` 区块；邮箱默认未公开，需要时自行添加
