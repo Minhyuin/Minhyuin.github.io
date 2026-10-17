@@ -1,7 +1,7 @@
-/* 粒子标志
- * 把 assets/logo.webp 采样成点阵（按原图颜色归类），
+/* 粒子头像
+ * 把 <img> 里的 GitHub 头像采样成点阵（颜色取原图），
  * 指针靠近时点阵被吸过去、绕着指针打转，离开后弹回原位。
- * 没有依赖；图片没加载成功、或采样失败时，保持 <img> 兜底。
+ * 没有依赖；图片没加载成功、或采样失败时，保留 <img> 兜底。
  */
 (function () {
   'use strict';
@@ -15,41 +15,16 @@
   if (!imgEl || !ctx) return;
 
   var SAMPLE = 300;                       // 采样网格边长（正方形）
+  var DISC = true;                        // 头像是方图，裁成圆形更像徽章
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
-  var COLOR_VARS = ['--p-red', '--p-blue', '--p-yellow', '--p-grey', '--p-light'];
 
-  /* ── 调色板 ─────────────────────────────────────────────── */
+  /* ── 采样：把头像变成点 ──────────────────────────────────── */
 
-  function hexToRgb(hex) {
-    var h = hex.trim().replace('#', '');
-    if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
-    var v = parseInt(h, 16);
-    if (isNaN(v)) return [136, 136, 136];
-    return [(v >> 16) & 255, (v >> 8) & 255, v & 255];
+  function inDisc(x, y) {
+    if (!DISC) return true;
+    var dx = x - 0.5, dy = y - 0.5;
+    return dx * dx + dy * dy <= 0.25;
   }
-
-  function readPalette() {
-    var cs = getComputedStyle(document.documentElement);
-    return COLOR_VARS.map(function (name) {
-      var css = cs.getPropertyValue(name).trim() || '#888888';
-      return { css: css, rgb: hexToRgb(css) };
-    });
-  }
-
-  function nearest(pal, r, g, b) {
-    var best = 0;
-    var dist = Infinity;
-    for (var i = 0; i < pal.length; i++) {
-      var p = pal[i].rgb;
-      var d = (p[0] - r) * (p[0] - r) + (p[1] - g) * (p[1] - g) + (p[2] - b) * (p[2] - b);
-      if (d < dist) { dist = d; best = i; }
-    }
-    return best;
-  }
-
-  /* ── 采样：把标志变成点 ──────────────────────────────────── */
-
-  var pal = readPalette();
 
   function sample(target) {
     var buf = document.createElement('canvas');
@@ -66,14 +41,20 @@
 
     var total = SAMPLE * SAMPLE;
     var ink = 0;
-    var i;
-    for (i = 0; i < total; i++) if (data[i * 4 + 3] > 96) ink++;
+    var i, x, y;
+
+    for (y = 0; y < SAMPLE; y++) {
+      for (x = 0; x < SAMPLE; x++) {
+        i = y * SAMPLE + x;
+        if (data[i * 4 + 3] > 96 && inDisc((x + 0.5) / SAMPLE, (y + 0.5) / SAMPLE)) ink++;
+      }
+    }
     if (!ink) return [];
 
     // 期望点数只决定网格步长；每格取一个点，保证分布均匀、不出团块
     var step = Math.max(1.2, SAMPLE / Math.sqrt(target / (ink / total)));
     var pts = [];
-    var y, x, xx, yy, x0, y0, x1, y1, pick, seen, k, a;
+    var xx, yy, x0, y0, x1, y1, pick, seen, k, a;
 
     for (y = 0; y < SAMPLE; y += step) {
       for (x = 0; x < SAMPLE; x += step) {
@@ -85,7 +66,7 @@
         for (yy = y0; yy < y1; yy++) {
           for (xx = x0; xx < x1; xx++) {
             k = yy * SAMPLE + xx;
-            if (data[k * 4 + 3] > 96) {
+            if (data[k * 4 + 3] > 96 && inDisc((xx + 0.5) / SAMPLE, (yy + 0.5) / SAMPLE)) {
               seen++;
               if (Math.random() < 1 / seen) pick = k;   // 蓄水池抽样
             }
@@ -97,7 +78,9 @@
         pts.push({
           x: ((pick % SAMPLE) + 0.5 + (Math.random() - 0.5) * step * 0.55) / SAMPLE,
           y: (((pick / SAMPLE) | 0) + 0.5 + (Math.random() - 0.5) * step * 0.55) / SAMPLE,
-          c: nearest(pal, data[pick * 4], data[pick * 4 + 1], data[pick * 4 + 2]),
+          r: data[pick * 4],
+          g: data[pick * 4 + 1],
+          b: data[pick * 4 + 2],
           soft: a < 235 ? 1 : 0
         });
       }
@@ -125,7 +108,6 @@
   }
 
   function build() {
-    pal = readPalette();
     var list = sample(targetCount());
     n = list.length;
     if (!n) return false;
@@ -139,22 +121,28 @@
     vx = new Float32Array(n);
     vy = new Float32Array(n);
 
+    // 颜色先量化到 8³ 的桶、再取桶内均值：一次 fillStyle 就能画一批点
     var buckets = {};
     for (var i = 0; i < n; i++) {
-      hxN[i] = list[i].x;
-      hyN[i] = list[i].y;
-      var key = list[i].c + '|' + list[i].soft;
-      (buckets[key] || (buckets[key] = [])).push(i);
+      var p = list[i];
+      hxN[i] = p.x;
+      hyN[i] = p.y;
+      var key = (p.r >> 5) * 64 + (p.g >> 5) * 8 + (p.b >> 5) + (p.soft ? 512 : 0);
+      var bk = buckets[key];
+      if (!bk) bk = buckets[key] = { idx: [], sr: 0, sg: 0, sb: 0, soft: p.soft };
+      bk.idx.push(i);
+      bk.sr += p.r; bk.sg += p.g; bk.sb += p.b;
     }
 
     groups = Object.keys(buckets).map(function (key) {
-      var parts = key.split('|');
-      var ci = +parts[0];
+      var bk = buckets[key];
+      var len = bk.idx.length;
       return {
-        ci: ci,
-        css: pal[ci].css,
-        alpha: parts[1] === '1' ? 0.55 : 1,   // 抗锯齿边缘淡一点，轮廓更柔
-        idx: new Int32Array(buckets[key])
+        css: 'rgb(' + Math.round(bk.sr / len) + ',' +
+                    Math.round(bk.sg / len) + ',' +
+                    Math.round(bk.sb / len) + ')',
+        alpha: bk.soft ? 0.55 : 1,            // 抗锯齿边缘淡一点，轮廓更柔
+        idx: new Int32Array(bk.idx)
       };
     });
     return true;
@@ -278,12 +266,6 @@
     raf = 0;
   }
 
-  function repaint() {
-    pal = readPalette();
-    for (var g = 0; g < groups.length; g++) groups[g].css = pal[groups[g].ci].css;
-    if (!raf) draw();
-  }
-
   /* ── 指针 ───────────────────────────────────────────────── */
 
   function move(e) {
@@ -345,19 +327,6 @@
     window.addEventListener('resize', function () { if (n) layout(); });
   }
 
-  if ('MutationObserver' in window) {
-    new MutationObserver(function (records) {
-      for (var i = 0; i < records.length; i++) {
-        if (records[i].attributeName === 'data-theme') { repaint(); return; }
-      }
-    }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-  }
-
-  var dark = window.matchMedia('(prefers-color-scheme: dark)');
-  var onScheme = function () { repaint(); };
-  if (dark.addEventListener) dark.addEventListener('change', onScheme);
-  else if (dark.addListener) dark.addListener(onScheme);
-
   if (reduced.addEventListener) {
     reduced.addEventListener('change', function () {
       still = reduced.matches;
@@ -368,10 +337,17 @@
 
   /* ── 启动 ───────────────────────────────────────────────── */
 
+  // 头像取不到（离线、被拦、或账号改名）时，把标志整块收掉，hero 退回单栏
+  function fail() {
+    wrap.hidden = true;
+    var inner = wrap.parentElement;
+    if (inner) inner.classList.add('no-mark');
+  }
+
   function boot() {
-    if (!imgEl.naturalWidth) return;        // 图没加载成功，保留 <img>
+    if (!imgEl.naturalWidth) return fail();
     layout();
-    if (!build()) return;
+    if (!build()) return;                   // 采样失败（如 CORS 被拦）保留 <img>
     layout();
     if (still) draw();
     else start();
@@ -379,11 +355,19 @@
     document.dispatchEvent(new CustomEvent('particles:ready', { detail: { count: n } }));
   }
 
-  if (imgEl.complete && imgEl.naturalWidth) boot();
-  else imgEl.addEventListener('load', boot, { once: true });
+  if (imgEl.complete) {
+    if (imgEl.naturalWidth) boot();
+    else fail();
+  } else {
+    imgEl.addEventListener('load', boot, { once: true });
+    imgEl.addEventListener('error', fail, { once: true });
+  }
 
   // 调试用：控制台可查看点数与参数
   window.__myuinParticles = function () {
-    return { count: n, size: size, radius: radius, pullRadius: R, still: still, groups: groups.length };
+    return {
+      count: n, size: size, radius: radius, pullRadius: R,
+      still: still, groups: groups.length, src: imgEl.currentSrc
+    };
   };
 })();

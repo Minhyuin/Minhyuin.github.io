@@ -33,13 +33,6 @@
   --color-nav-bg:         rgba(236, 233, 224, 0.86);
   --color-grain-opacity:  0.05;
 
-  /* 粒子标志的四色（取自标志本身，粒子引擎按最近色归类） */
-  --p-red:    #D2464A;
-  --p-blue:   #123A8E;
-  --p-yellow: #EBC32B;
-  --p-grey:   #4A4A4A;
-  --p-light:  #C9C4B6;
-
   /* 字体（Latin） */
   --font-display: 'Lora', 'DM Serif Display', Georgia, serif;
   --font-heading: 'Poppins', 'DM Sans', Arial, sans-serif;
@@ -112,12 +105,6 @@
     --color-border-strong:  #57544B;
     --color-nav-bg:         rgba(26, 25, 22, 0.86);
     --color-grain-opacity:  0.035;
-    /* 深色底上提高明度，蓝色不发闷 */
-    --p-red:    #E4635F;
-    --p-blue:   #4B7DD8;
-    --p-yellow: #F2D04A;
-    --p-grey:   #8C8980;
-    --p-light:  #D9D4C6;
     --shadow-card:     0 2px 12px rgba(0, 0, 0, 0.4);
     --shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.5);
   }
@@ -138,12 +125,6 @@
   --color-border-strong:  #57544B;
   --color-nav-bg:         rgba(26, 25, 22, 0.86);
   --color-grain-opacity:  0.035;
-  /* 深色底上提高明度，蓝色不发闷 */
-  --p-red:    #E4635F;
-  --p-blue:   #4B7DD8;
-  --p-yellow: #F2D04A;
-  --p-grey:   #8C8980;
-  --p-light:  #D9D4C6;
   --shadow-card:     0 2px 12px rgba(0, 0, 0, 0.4);
   --shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.5);
 }
@@ -357,6 +338,8 @@ a:hover > .arrow, .btn:hover .arrow { transform: translate(2px, -2px); }
   align-items: center;
 }
 .hero-copy { min-width: 0; }
+/* 头像加载失败时粒子脚本会给内层加 .no-mark，退回单栏，不留空列 */
+.hero-inner.no-mark { grid-template-columns: minmax(0, 1fr); }
 
 /* 粒子标志：静止时先显示原图，粒子就绪后淡出交给 canvas */
 .hero-mark {
