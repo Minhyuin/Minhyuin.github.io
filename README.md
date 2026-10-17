@@ -13,6 +13,8 @@ Myuin 的个人主页 —— 轮腿机器人、嵌入式电控与具身智能。
 | `index.html` | 单页结构（Hero / 关于 / 项目 / 技术栈 / 联系） |
 | `assets/site.css` | 全部样式：设计 Token、深浅色主题、响应式 |
 | `assets/site.js` | 滚动入场、主题切换、页脚年份（原生 JS，无依赖） |
+| `assets/particles.js` | 首页右侧的粒子徽标：把 logo 采样成点阵，鼠标靠近时吸附位移 |
+| `assets/logo.webp` | 粒子徽标所用的 logo（480×480，透明底） |
 | `assets/fonts/` | 本地字体（Lora / Poppins / JetBrains Mono，SIL OFL 1.1） |
 | `assets/favicon.svg` | 站点图标 |
 | `.nojekyll` | 关闭 GitHub Pages 的 Jekyll 处理，加快发布 |
@@ -42,6 +44,18 @@ npx serve .
 ## 字体许可
 
 `assets/fonts/` 中的 woff2 字体来自 Google Fonts / JetBrains，均为 SIL Open Font License 1.1，可自由分发与商用：<https://scripts.sil.org/OFL>
+
+## 首页的粒子徽标
+
+`assets/particles.js` 把 `assets/logo.webp` 缩到 300×300 后逐格采样，每格随机取一个不透明像素作为粒子的“归位点”，颜色按红 / 蓝 / 黄 / 灰 / 浅灰归成几组，用 Canvas 绘制。
+
+- 鼠标进入画布附近时，半径 `R` 内的粒子被吸向指针并绕其轻微旋涡，离开后靠弹簧回位，回位过程带阻尼
+- 点数与点径按画布宽度推算（约 `w²/56`，1400–5200 之间），宽度变化超过 30% 时重新采样
+- 5 个颜色取自 CSS 变量 `--p-red` / `--p-blue` / `--p-yellow` / `--p-grey` / `--p-light`，深色模式有单独的一组
+- 尊重 `prefers-reduced-motion`：只绘制静态点阵，不做吸附与入场动画
+- 没有 JS 或图片加载失败时，上面那层 `<img>` 会保留，显示原始 logo
+
+要调手感：`layout()` 里的 `R = size * 0.34` 是吸附半径、`radius` 是点径、点数公式是 `size * size / 56`；`step()` 里的 `k` 是回位弹簧、`damp` 是阻尼、`swirl` 是绕指针的切向分量。换 logo 只需替换 `assets/logo.webp`（正方形、透明底最佳）。
 
 ## 内容维护
 
