@@ -14,7 +14,7 @@
   var ctx = canvas.getContext('2d');
   if (!imgEl || !ctx) return;
 
-  var SAMPLE = 300;                       // 采样网格边长（正方形）
+  var SAMPLE = 512;                       // 采样网格边长（正方形）
   var DISC = true;                        // 头像是方图，裁成圆形更像徽章
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
 
@@ -102,9 +102,11 @@
   var ptr = { x: 0, y: 0, s: 0, active: false };
 
   // 点数按画布面积定：面积越大越密，密度保持一致
+  // 触屏设备降一档密度，避免低端手机为这块点阵掉帧
+  var dense = !window.matchMedia('(hover: none)').matches;
   function targetCount() {
     var s = size || 440;
-    return Math.max(1400, Math.min(5200, Math.round((s * s) / 56)));
+    return Math.max(2600, Math.min(16000, Math.round((s * s) / (dense ? 16 : 22))));
   }
 
   function build() {
@@ -152,14 +154,16 @@
     var rect = canvas.getBoundingClientRect();
     size = Math.max(140, Math.round(rect.width || 440));
     lastW = size;
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    dpr = Math.min(window.devicePixelRatio || 1, 3);
 
     canvas.width = Math.round(size * dpr);
     canvas.height = Math.round(size * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     R = size * 0.34;
-    radius = Math.max(1.05, size * 0.0034);
+    // 点径跟着实际点距走：点距越密，点画得越小，整片看起来才像连续的图而不是筛子
+    var pitch = n ? size / Math.sqrt(n) : 4;
+    radius = Math.max(0.9, pitch * 0.30);
     fade = still ? 1 : 0;
 
     for (var i = 0; i < n; i++) {
@@ -246,7 +250,11 @@
   function frame(ts) {
     raf = requestAnimationFrame(frame);
     if (!visible) { last = ts; return; }
-    var dt = last ? Math.min(ts - last, 48) : 16.7;
+    if (!last) { last = ts - 16.7; }
+    var dt = Math.min(ts - last, 48);
+
+    // 没在交互、入场也放完了：隔帧再画，省一半光栅化（呼吸本来就慢，看不出来）
+    if (!ptr.active && ptr.s < 0.01 && fade >= 1 && dt < 30) return;
     last = ts;
 
     ptr.s += ((ptr.active ? 1 : 0) - ptr.s) * Math.min(1, dt / 110);

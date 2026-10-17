@@ -97,8 +97,9 @@
       </div>
       <div class="hero-mark" aria-hidden="true">
         <canvas class="particle-canvas" data-particles width="480" height="480"></canvas>
-        <!-- 头像直接取 GitHub CDN（u/85868520 = Minhyuin），换头像后 5 分钟内自动跟上 -->
-        <img class="hero-mark-img" src="https://avatars.githubusercontent.com/u/85868520?s=480"
+        <!-- 头像直接取 GitHub CDN（u/85868520 = Minhyuin），换头像后 5 分钟内自动跟上
+             仓库里那张原图是 460px，要 1024 只会拿回同一张；换更大尺寸的头像时这里才吃得到 -->
+        <img class="hero-mark-img" src="https://avatars.githubusercontent.com/u/85868520?s=1024"
              alt="" width="480" height="480" crossorigin="anonymous" referrerpolicy="no-referrer" decoding="async">
       </div>
     </div>
